@@ -1,12 +1,12 @@
 package domain;
 
 /**
- * Елемент агрегата (варіант 3 — товар у кошику).
+ * Елемент агрегата (варіант 0 — позиція замовлення).
  * Незмінні дані (id, name, price) — final; кількість змінюється контрольовано.
- * Конструктор package-private: створити товар можна лише через Cart,
+ * Конструктор package-private: створити позицію можна лише через Order,
  * який валідує дані — отже некоректні елементи не потраплять в агрегат.
  */
-public class CartItem {
+public class OrderItem {
 
     private static int counter = 0;     // спільний лічильник -> унікальні номери
 
@@ -16,7 +16,7 @@ public class CartItem {
     private int quantity;               // змінюється лише контрольовано
 
     /** Повний набір даних (package-private — лише для класів домену). */
-    CartItem(String name, double price, int quantity) {
+    OrderItem(String name, double price, int quantity) {
         this.id = ++counter;
         this.name = name;
         this.price = price;
@@ -24,7 +24,7 @@ public class CartItem {
     }
 
     /** Скорочений: кількість за замовчуванням = 1 (делегує через this(...)). */
-    CartItem(String name, double price) {
+    OrderItem(String name, double price) {
         this(name, price, 1);
     }
 

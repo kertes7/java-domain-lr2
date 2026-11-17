@@ -3,9 +3,10 @@ package app;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 
-import domain.Cart;
-import domain.CartItem;
+import domain.Order;
+import domain.OrderItem;
 
 /**
  * Клас Main (пакет app). Наповнює агрегат і демонструє, що модель
@@ -16,32 +17,31 @@ public class Main {
     public static void main(String[] args) {
         PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
-        Cart cart = new Cart();
-        cart.addItem("Клавіатура", 1200.00, 1);
-        cart.addItem("Миша", 500.00, 2);
+        Order order = new Order();
+        order.addItem("Клавіатура", 1200.00, 1);
+        order.addItem("Миша", 500.00, 2);
 
-        out.println("Кошик #" + cart.getId());
-        for (CartItem it : cart.items()) {
+        out.println("Замовлення #" + order.getId());
+        for (OrderItem it : order.items()) {
             out.println(it);
         }
-        out.printf(java.util.Locale.US, "Разом: %.2f%n", cart.total());
+        out.printf(Locale.US, "Разом: %.2f%n", order.total());
 
         // Спроба 1: змінити перелік позицій ззовні.
-        List<CartItem> external = cart.items();   // лише копія
-        external.clear();                         // очищаємо копію
-        // external.add(new CartItem(...));       // НЕ КОМПІЛЮЄТЬСЯ: конструктор CartItem package-private
-        // cart.items — приватне поле, недоступне напряму
-        out.printf(java.util.Locale.US, "спроба змінити перелік позицій ззовні -> на кошик не впливає, Разом: %.2f%n",
-                cart.total());
+        List<OrderItem> external = order.items();   // лише копія
+        external.clear();                           // очищаємо копію
+        // external.add(new OrderItem(...));        // НЕ КОМПІЛЮЄТЬСЯ: конструктор OrderItem package-private
+        out.printf(Locale.US, "спроба змінити перелік позицій ззовні -> на замовлення не впливає, Разом: %.2f%n",
+                order.total());
 
         // Спроба 2: додати позицію з некоректною ціною.
-        boolean ok = cart.addItem("Товар", -10, 1);
+        boolean ok = order.addItem("Товар", -10, 1);
         out.println("спроба додати позицію з ціною -10 -> " + (ok ? "додано" : "відхилено"));
 
         // Спроба 3: службова операція узгодження недоступна поза пакетом domain.
-        // double x = cart.items().get(0).lineTotal(); // НЕ КОМПІЛЮЄТЬСЯ: lineTotal() package-private
+        // double x = order.items().get(0).lineTotal(); // НЕ КОМПІЛЮЄТЬСЯ: lineTotal() package-private
 
-        out.printf(java.util.Locale.US, "Підсумок залишається узгодженим: позицій=%d, Разом: %.2f%n",
-                cart.size(), cart.total());
+        out.printf(Locale.US, "Сума залишається узгодженою: позицій=%d, Разом: %.2f%n",
+                order.size(), order.total());
     }
 }

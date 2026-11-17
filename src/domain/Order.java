@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Агрегат «Кошик». Узгодженість підсумку тримається КОНСТРУКЦІЄЮ класу:
+ * Агрегат «Замовлення». Узгодженість суми тримається КОНСТРУКЦІЄЮ класу:
  * - внутрішній список прихований (private), назовні видається лише копія;
- * - підсумок обчислюється за елементами (не зберігається окремим полем);
- * - елементи створюються лише тут після валідації.
+ * - сума обчислюється за позиціями (не зберігається окремим полем);
+ * - позиції створюються лише тут після валідації.
  */
-public class Cart {
+public class Order {
 
-    private static int cartCounter = 0;
+    private static int orderCounter = 0;
 
     private final int id;
-    private final List<CartItem> items = new ArrayList<>();   // прихований внутрішній набір
+    private final List<OrderItem> items = new ArrayList<>();   // прихований внутрішній набір
 
-    public Cart() {
-        this.id = ++cartCounter;
+    public Order() {
+        this.id = ++orderCounter;
     }
 
     public int getId() { return id; }
@@ -27,7 +27,7 @@ public class Cart {
         if (name == null || name.isBlank() || price <= 0 || quantity < 1) {
             return false;                       // відхилено
         }
-        items.add(new CartItem(name, price, quantity));
+        items.add(new OrderItem(name, price, quantity));
         return true;
     }
 
@@ -36,17 +36,17 @@ public class Cart {
         return addItem(name, price, 1);
     }
 
-    /** Підсумок завжди відповідає поточному набору (обчислюється, не зберігається). */
+    /** Сума завжди відповідає поточному набору (обчислюється, не зберігається). */
     public double total() {
         double sum = 0;
-        for (CartItem it : items) {
+        for (OrderItem it : items) {
             sum += it.lineTotal();              // службова операція узгодження (package-private)
         }
         return sum;
     }
 
     /** Назовні — лише захисна копія: зміни копії не впливають на агрегат. */
-    public List<CartItem> items() {
+    public List<OrderItem> items() {
         return new ArrayList<>(items);
     }
 
